@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+.env
+ffmpeg/
+ffmpeg.exe
+ffmpeg.zip
+*.log
+playlists.json
