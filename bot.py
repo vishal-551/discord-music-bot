@@ -16,6 +16,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
 from vosk import Model, KaldiRecognizer
+from flask import Flask
+from threading import Thread
 
 print("[DEBUG] discord.py =", discord.__version__)
 print("[DEBUG] voice_recv module =", getattr(voice_recv, "__file__", "unknown"))
@@ -57,6 +59,20 @@ if VOICE_COMMANDS_ENABLED and VOSK_MODEL_PATH and os.path.exists(VOSK_MODEL_PATH
 else:
     if VOICE_COMMANDS_ENABLED:
         print("[VOICE] Voice commands enabled but VOSK_MODEL_PATH is missing/invalid.")
+
+        app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Bot is alive", 200
+
+def run_web():
+    port = int(os.getenv("PORT", "10000"))
+    app.run(host="0.0.0.0", port=port)
+
+def keep_alive():
+    t = Thread(target=run_web, daemon=True)
+    t.start()
 
 # =========================================================
 # BOT
@@ -3097,5 +3113,5 @@ async def slash_singerplaylist(interaction: discord.Interaction, singer_name: st
     await refresh_player_message(interaction.guild)
     await interaction.followup.send(f"Singer playlist created: {final_name}", ephemeral=True)
 
-
+keep_alive()
 bot.run(TOKEN)

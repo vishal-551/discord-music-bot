@@ -1,2 +1,7 @@
 discord.py
+python-dotenv
 yt-dlp
+spotipy
+flask
+PyNaCl
+vosk
